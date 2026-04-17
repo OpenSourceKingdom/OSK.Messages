@@ -1,7 +1,5 @@
 <Solution>
   <Project Path="OSK.Messages.Abstractions/OSK.Messages.Abstractions.csproj" Id="8b4c3bfb-aba8-415c-848c-23cd50caf426" />
-  <Project Path="OSK.Messages.Couriers.Pigeons/OSK.Messages.Couriers.Pigeons.csproj" Id="1bea4b0b-76e5-49ab-918a-c7affde99078" />
-  <Project Path="OSK.Messages.Couriers.EasyNetQ/OSK.Messages.Couriers.EasyNetQ.csproj" Id="5a19472e-f7c5-43c9-b281-0b58965ca959" />
   <Project Path="OSK.Messages.Messaging.UnitTests/OSK.Messages.Messaging.UnitTests.csproj" Id="2cd085a8-f1f0-47b1-b6eb-35eb4a93969c" />
   <Project Path="OSK.Messages.Messaging/OSK.Messages.Messaging.csproj" />
   <Project Path="OSK.Messages.Runtime/OSK.Messages.Runtime.csproj" Id="5b0dc7f9-1dc6-4eb8-9dd9-989bf8f18b4d" />
