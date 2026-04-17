@@ -1,10 +1,12 @@
-﻿using OSK.Messages.Messaging.Models;
+﻿using OSK.Hexagonal.MetaData;
+using OSK.Messages.Messaging.Models;
 
 namespace OSK.Messages.Messaging.Ports;
 
 /// <summary>
 /// A factory for a given courier service integration that creates <see cref="IMessageDeliveryPipeline"/> for handling final delivery processing
 /// </summary>
+[HexagonalIntegration(HexagonalIntegrationType.IntegrationOptional)]
 public interface IMessageDeliveryPipelineFactory
 {
     /// <summary>

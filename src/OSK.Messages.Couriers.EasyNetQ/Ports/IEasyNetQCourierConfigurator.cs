@@ -1,4 +1,5 @@
 ﻿using EasyNetQ;
+using OSK.Hexagonal.MetaData;
 using OSK.Messages.Messaging;
 using System;
 
@@ -7,6 +8,7 @@ namespace OSK.Messages.Couriers.EasyNetQ.Ports;
 /// <summary>
 /// A configurator that helps to setup the EasyNetQ queues
 /// </summary>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
 public interface IEasyNetQCourierConfigurator
 {
     /// <summary>

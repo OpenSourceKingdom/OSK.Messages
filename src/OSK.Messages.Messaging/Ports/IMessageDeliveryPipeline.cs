@@ -1,13 +1,15 @@
-﻿using System;
+﻿using OSK.Hexagonal.MetaData;
+using OSK.Messages.Abstractions;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using OSK.Messages.Abstractions;
 
 namespace OSK.Messages.Messaging.Ports;
 
 /// <summary>
 /// Represents a delivery pipeline that needs to run in the background in order to process final delivery of received messages
 /// </summary>
+[HexagonalIntegration(HexagonalIntegrationType.IntegrationOptional)]
 public interface IMessageDeliveryPipeline: IAsyncDisposable
 {
     /// <summary>

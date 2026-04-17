@@ -1,12 +1,14 @@
-﻿using System.Threading.Tasks;
-using OSK.Operations.Outputs.Models;
+﻿using OSK.Hexagonal.MetaData;
 using OSK.Messages.Messaging.Models;
+using OSK.Operations.Outputs.Models;
+using System.Threading.Tasks;
 
 namespace OSK.Messages.Messaging.Ports;
 
 /// <summary>
 /// A generic middleware that can be applied to any message delivery
 /// </summary>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided, HexagonalIntegrationType.ConsumerOptional)]
 public interface IMessageMiddleware
 {
     /// <summary>

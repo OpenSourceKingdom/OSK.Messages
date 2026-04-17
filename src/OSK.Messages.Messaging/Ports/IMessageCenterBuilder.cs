@@ -1,15 +1,17 @@
-﻿using OSK.Messages.Abstractions;
-using System;
-using System.Threading.Tasks;
-using OSK.Operations.Outputs.Models;
+﻿using OSK.Hexagonal.MetaData;
+using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.Options;
+using OSK.Operations.Outputs.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace OSK.Messages.Messaging.Ports;
 
 /// <summary>
 /// A builder factory that helps to build custom tailored and configured Message centers
 /// </summary>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
 public interface IMessageCenterBuilder
 {
     /// <summary>

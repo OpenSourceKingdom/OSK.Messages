@@ -3,6 +3,7 @@ using OSK.Operations.Outputs.Models;
 using System;
 using System.Threading.Tasks;
 using OSK.Messages.Messaging.Models;
+using OSK.Hexagonal.MetaData;
 
 namespace OSK.Messages.Messaging.Ports;
 
@@ -10,6 +11,7 @@ namespace OSK.Messages.Messaging.Ports;
 /// A configurator that helps to setup message boxes that receive messages
 /// </summary>
 /// <typeparam name="TMessage"></typeparam>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
 public interface IMessageBoxConfigurator<TMessage>
     where TMessage: IMessage
 {

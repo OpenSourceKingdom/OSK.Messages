@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using OSK.Hexagonal.MetaData;
 using OSK.Messages.Abstractions;
-using OSK.Operations.Outputs.Models;
 using OSK.Messages.Messaging.Models;
+using OSK.Operations.Outputs.Models;
+using System.Threading.Tasks;
 
 namespace OSK.Messages.Messaging.Ports;
 
@@ -9,6 +10,7 @@ namespace OSK.Messages.Messaging.Ports;
 /// A middleware that runs on a specific message during delivery
 /// </summary>
 /// <typeparam name="TMessage">The message type the middleware will be applied to</typeparam>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided, HexagonalIntegrationType.ConsumerOptional)]
 public interface IMessageMiddleware<TMessage>
     where TMessage : IMessage
 {

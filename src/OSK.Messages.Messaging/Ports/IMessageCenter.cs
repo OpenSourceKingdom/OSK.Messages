@@ -1,15 +1,17 @@
-﻿using OSK.Operations.Outputs.Models;
+﻿using OSK.Hexagonal.MetaData;
+using OSK.Messages.Abstractions;
+using OSK.Messages.Messaging.Models;
+using OSK.Operations.Outputs.Models;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using OSK.Messages.Messaging.Models;
-using OSK.Messages.Abstractions;
 
 namespace OSK.Messages.Messaging.Ports;
 
 /// <summary>
 /// A central location for message delivery to be received in the messaging system
 /// </summary>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided)]
 public interface IMessageCenter
 {
     /// <summary>
