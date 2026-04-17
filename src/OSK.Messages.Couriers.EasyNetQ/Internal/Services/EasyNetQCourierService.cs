@@ -1,5 +1,5 @@
 ﻿using EasyNetQ;
-using OSK.Messages.Abstractions;
+using OSK.Messages.Couriers.EasyNetQ.Ports;
 using OSK.Operations.Outputs;
 using OSK.Operations.Outputs.Models;
 using System;
@@ -9,7 +9,7 @@ using IMessage = OSK.Messages.Abstractions.IMessage;
 
 namespace OSK.Messages.Couriers.EasyNetQ.Internal.Services;
 
-internal class EasyNetQCourierService(IBus bus) : ICourierService
+internal class EasyNetQCourierService(IBus bus) : IEasyNetQCourierService
 {
     #region ICourierService
 

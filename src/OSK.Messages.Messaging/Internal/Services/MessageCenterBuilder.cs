@@ -18,7 +18,7 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
     private readonly Dictionary<Type, Func<IEnumerable<IMessageMiddleware>, IServiceProvider, MessageBox>> _messageBoxBuilders = [];
     private readonly MessagingOptions _options = new()
     {
-        AllowInheritedRecipients = false,
+        AllowInheritedMessageDelivery = false,
         MaxParallelRecipients = 1
     };
 

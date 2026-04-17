@@ -1,7 +1,7 @@
 ﻿using OSK.Messages.Abstractions;
 using System;
-using OSK.Messages.Couriers.EasyNetQ.Internal.Services;
 using OSK.Messages.Messaging.Models;
+using OSK.Messages.Couriers.EasyNetQ.Ports;
 
 namespace OSK.Messages.Couriers.EasyNetQ.Models;
 
@@ -17,7 +17,7 @@ public class EasyNetQCourierDescriptor : ICourierDescriptor
 
     public CourierName Name => EasyNetQ;
 
-    public Type CourierServiceType { get; } = typeof(EasyNetQCourierService);
+    public Type CourierServiceType { get; } = typeof(IEasyNetQCourierService);
 
     #endregion
 }

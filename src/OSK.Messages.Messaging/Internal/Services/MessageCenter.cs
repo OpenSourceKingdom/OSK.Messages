@@ -69,7 +69,7 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
             return validBoxes;
         }
 
-        validBoxes = options.AllowInheritedRecipients
+        validBoxes = options.AllowInheritedMessageDelivery
             ? [.. messageBoxes.Where(box => box.BoxType.IsAssignableFrom(messageType))]
             : [.. messageBoxes.Where(box => box.BoxType == messageType)];
 
