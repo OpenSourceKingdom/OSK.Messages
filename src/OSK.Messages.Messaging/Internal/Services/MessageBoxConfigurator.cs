@@ -17,7 +17,7 @@ internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBox
     #region Variables
 
     private readonly Stack<Func<IServiceProvider, IMessageMiddleware<TMessage>>> _middlewareFactories = [];
-    private List<Func<IServiceProvider, IMessageHandler<TMessage>>> _handlerFactories = [];
+    private List<Func<IServiceProvider, IMessageRecipient<TMessage>>> _recipientFactories = [];
 
     #endregion
 
@@ -30,14 +30,14 @@ internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBox
             throw new ArgumentNullException(nameof(handler));
         }
 
-        _handlerFactories.Add(_ => new MessageHandler<TMessage>(handler));
+        _recipientFactories.Add(_ => new MessageRecipient<TMessage>(handler));
         return this;
     }
 
     public IMessageBoxConfigurator<TMessage> WithRecipient<THandler>() 
-        where THandler : IMessageHandler<TMessage>
+        where THandler : IMessageRecipient<TMessage>
     {
-        _handlerFactories.Add(sp => sp.GetRequiredService<THandler>());
+        _recipientFactories.Add(sp => sp.GetRequiredService<THandler>());
         return this;
     }
 
@@ -65,19 +65,19 @@ internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBox
 
     public override MessageBox BuildMessageBox(IEnumerable<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
     {
-        if (_handlerFactories.Count is 0)
-        {
-            throw new InvalidOperationException($"Unable to build message box for messages of type {typeof(TMessage)} because no message handler was configured to process it.");
-        }
         if (services is null)
         {
             throw new ArgumentNullException(nameof(services));
         }
-
-        return new MessageBox<TMessage>([.. _handlerFactories.Select(factory =>
+        if (_recipientFactories.Count is 0)
         {
-            var handler = factory(services);
-            return new MessageBoxRecipient<TMessage>(handler, CreateDelegate(handler, globalMiddlewares, services));
+            throw new InvalidOperationException($"Unable to build message box for messages of type {typeof(TMessage)} because no message handler was configured to process it.");
+        }
+
+        return new MessageBox<TMessage>([.. _recipientFactories.Select(factory =>
+        {
+            var recipient = factory(services);
+            return new MessageBoxRecipient<TMessage>(recipient, CreateDelegate(recipient, globalMiddlewares, services));
         })]);
     }
 
@@ -85,9 +85,9 @@ internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBox
 
     #region Helpers
 
-    private MessageDelegate CreateDelegate(IMessageHandler<TMessage> messageHandler, IEnumerable<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
+    private MessageDelegate CreateDelegate(IMessageRecipient<TMessage> recipient, IEnumerable<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
     {
-        MessageDelegate<TMessage> typedPipeline = messageHandler.HandleAsync;
+        MessageDelegate<TMessage> typedPipeline = recipient.HandleAsync;
         while (_middlewareFactories.Count > 0)
         {
             var middlewareFactory = _middlewareFactories.Pop();

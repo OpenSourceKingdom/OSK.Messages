@@ -1,7 +1,7 @@
 ﻿using EasyNetQ;
 using Microsoft.Extensions.DependencyInjection;
-using OSK.Messages.Messaging;
 using OSK.Messages.Messaging.Models;
+using OSK.Messages.Messaging.Naming;
 using OSK.Messages.Messaging.Ports;
 using System;
 using System.Collections.Generic;

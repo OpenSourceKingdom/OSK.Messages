@@ -7,10 +7,10 @@ using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Messaging.Internal.Services;
 
-internal class MessageHandler<TMessage>(Func<MessageContext<TMessage>, Task<Output>> handler) : IMessageHandler<TMessage>
+internal class MessageRecipient<TMessage>(Func<MessageContext<TMessage>, Task<Output>> handler) : IMessageRecipient<TMessage>
     where TMessage : IMessage
 {
-    #region IMessageHandler
+    #region IMessageRecipient
 
     public Task<Output> HandleAsync(MessageContext<TMessage> context)
         => handler(context);

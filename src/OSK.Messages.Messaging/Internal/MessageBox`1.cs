@@ -35,7 +35,7 @@ internal class MessageBox<TMessage>(MessageBoxRecipient<TMessage>[] recipients)
     }
 
     public override IEnumerable<MessageRecipientDetails> GetRecipientDetails()
-        => recipients.Select(recipient => new MessageRecipientDetails(BoxType, recipient.GetType()));
+        => recipients.Select(recipient => new MessageRecipientDetails(BoxType, recipient.Handler.GetType()));
 
     #endregion
 }

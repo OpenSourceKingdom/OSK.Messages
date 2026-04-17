@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace OSK.Messages.Messaging.Ports;
 
 /// <summary>
-/// A handler that is used to process a message once it is delivered
+/// A recipient that is used to process a message once it is delivered
 /// </summary>
 /// <typeparam name="TMessage">The type of message the handler uses</typeparam>
-[HexagonalIntegration(HexagonalIntegrationType.ConsumerOptional)]
-public interface IMessageHandler<TMessage>
+[HexagonalIntegration(HexagonalIntegrationType.LibraryProvided, HexagonalIntegrationType.ConsumerOptional)]
+public interface IMessageRecipient<TMessage>
     where TMessage: IMessage
 {
     /// <summary>

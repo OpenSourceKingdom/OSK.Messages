@@ -1,6 +1,6 @@
 ﻿using EasyNetQ;
 using OSK.Hexagonal.MetaData;
-using OSK.Messages.Messaging;
+using OSK.Messages.Messaging.Naming;
 using System;
 
 namespace OSK.Messages.Couriers.EasyNetQ.Ports;

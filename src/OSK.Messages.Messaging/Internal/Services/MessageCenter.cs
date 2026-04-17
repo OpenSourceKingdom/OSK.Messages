@@ -30,12 +30,12 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
     public async Task<Output> ReceiveAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
         where TMessage: IMessage
     {
-        if (!_messageBoxLookup.TryGetValue(typeof(TMessage), out var box))
+        var messageBoxes = GetMessageBoxes<TMessage>();
+        if (messageBoxes.Length is 0)
         {
             return Out.Success();
         }
 
-        var messageBoxes = GetMessageBoxes<TMessage>();
         var outputs = new List<Output>();
 
         foreach (var messageBox in messageBoxes)

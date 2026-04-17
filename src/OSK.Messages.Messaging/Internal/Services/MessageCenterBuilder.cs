@@ -18,8 +18,7 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
     private readonly Dictionary<Type, Func<IEnumerable<IMessageMiddleware>, IServiceProvider, MessageBox>> _messageBoxBuilders = [];
     private readonly MessagingOptions _options = new()
     {
-        AllowInheritedMessageDelivery = false,
-        MaxParallelRecipients = 1
+        AllowInheritedMessageDelivery = false
     };
 
     #endregion
@@ -28,7 +27,12 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
 
     public IMessageCenterBuilder WithOptions(Action<MessagingOptions> optionConfigurator)
     {
-        optionConfigurator?.Invoke(_options);
+        if (optionConfigurator is null)
+        {
+            throw new ArgumentNullException(nameof(optionConfigurator));
+        }
+
+        optionConfigurator.Invoke(_options);
 
         return this;
     }
@@ -82,6 +86,11 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
 
     public IMessageCenter BuildMessageCenter(IServiceProvider services)
     {
+        if (services is null)
+        {
+            throw new ArgumentNullException(nameof(services));
+        }
+
         List<IMessageMiddleware> middlewares = [];
         foreach (var middlewareFactory in _middlewareFactories)
         {

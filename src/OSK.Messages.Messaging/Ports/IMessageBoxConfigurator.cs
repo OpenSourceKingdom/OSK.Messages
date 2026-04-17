@@ -43,5 +43,5 @@ public interface IMessageBoxConfigurator<TMessage>
     /// <typeparam name="THandler">The recipient type to include in message delivery</typeparam>
     /// <returns>Thje configurator for chaining</returns>
     IMessageBoxConfigurator<TMessage> WithRecipient<THandler>()
-        where THandler : IMessageHandler<TMessage>;
+        where THandler : IMessageRecipient<TMessage>;
 }

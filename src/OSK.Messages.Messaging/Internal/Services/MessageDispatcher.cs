@@ -25,6 +25,10 @@ internal class MessageDispatcher(IEnumerable<ICourierDescriptor> courierDescript
         {
             throw new ArgumentNullException(nameof(options));
         }
+        if (delay < TimeSpan.Zero)
+        {
+            throw new InvalidOperationException($"Delay can not be negative");
+        }
 
         var courierFilter = options.TargetCouriers?.ToHashSet() ?? [];
         var availableCouriers = courierFilter.Count > 0
@@ -44,11 +48,12 @@ internal class MessageDispatcher(IEnumerable<ICourierDescriptor> courierDescript
                 ? await courierService.ScheduleAsync(message, delay, cancellationToken)
                 : await courierService.DeliverAsync(message, cancellationToken);
 
-            courierOutputs.Add(sentOutput);
             if (options.DispatchStrategy is DispatchStrategy.FirstSuccess && sentOutput.IsSuccessful)
             {
-                break;
+                return sentOutput;
             }
+
+            courierOutputs.Add(sentOutput);
         }
 
         return courierOutputs.Count is 1

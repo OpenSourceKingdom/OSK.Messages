@@ -4,10 +4,10 @@ using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Messaging.Internal;
 
-internal class MessageBoxRecipient<TMessage>(IMessageHandler<TMessage> handler, MessageDelegate messageDelegate)
+internal class MessageBoxRecipient<TMessage>(IMessageRecipient<TMessage> handler, MessageDelegate messageDelegate)
     where TMessage: IMessage
 {
-    public IMessageHandler<TMessage> Handler => handler;
+    public IMessageRecipient<TMessage> Handler => handler;
 
     public MessageDelegate Delegate => messageDelegate;
 }

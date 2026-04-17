@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace OSK.Messages.Messaging.Options;
+﻿namespace OSK.Messages.Messaging.Options;
 
 /// <summary>
 /// Provides configuration options for the underlying processing within the message delivery system
