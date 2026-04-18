@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using OSK.Operations.Outputs;
 using Microsoft.Extensions.DependencyInjection;
-using OSK.Messages.Messaging.Models;
 
 namespace OSK.Messages.Messaging.Internal.Services;
 

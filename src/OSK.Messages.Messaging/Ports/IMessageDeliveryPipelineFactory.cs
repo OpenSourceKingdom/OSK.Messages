@@ -1,5 +1,5 @@
 ﻿using OSK.Hexagonal.MetaData;
-using OSK.Messages.Messaging.Models;
+using OSK.Messages.Abstractions;
 
 namespace OSK.Messages.Messaging.Ports;
 

@@ -1,12 +1,10 @@
 ﻿using OSK.Hexagonal.MetaData;
-using OSK.Messages.Abstractions;
-using OSK.Messages.Messaging.Models;
 using OSK.Operations.Outputs.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace OSK.Messages.Messaging.Ports;
+namespace OSK.Messages.Abstractions;
 
 /// <summary>
 /// A central location for message delivery to be received in the messaging system
