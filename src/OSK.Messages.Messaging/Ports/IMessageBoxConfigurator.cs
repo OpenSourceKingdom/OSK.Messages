@@ -20,7 +20,14 @@ public interface IMessageBoxConfigurator<TMessage>
     /// </summary>
     /// <param name="middleware">The middleware function to include in the pipeline</param>
     /// <returns>The configurator for chaining</returns>
-    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext<TMessage>, MessageDelegate<TMessage>, Task<Output>> middleware);
+    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, MessageDelegate, Task<Output>> middleware);
+
+    /// <summary>
+    /// Includes typed middleware in the pipeline for message delivery
+    /// </summary>
+    /// <param name="middleware">The middleware function to include in the pipeline</param>
+    /// <returns>The configurator for chaining</returns>
+    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, TMessage, MessageDelegate, Task<Output>> middleware);
 
     /// <summary>
     /// Includes middleware that is injected via DI in the pipeline for message delivery
@@ -28,20 +35,20 @@ public interface IMessageBoxConfigurator<TMessage>
     /// <typeparam name="TMiddleware">The type of middleware to include in the pipeline</typeparam>
     /// <returns>The configurator for chaining</returns>
     IMessageBoxConfigurator<TMessage> UseMiddleware<TMiddleware>()
-        where TMiddleware : IMessageMiddleware<TMessage>;
+        where TMiddleware : IMessageMiddleware;
 
     /// <summary>
-    /// Includes a recipient using a function into the messsage delivery
+    /// Includes a recipient in the message box that will receive messages
     /// </summary>
-    /// <param name="handler">The recipient function to include in the messsage delivery</param>
+    /// <param name="handler">The handler function for the re</param>
     /// <returns>The configurator for chaining</returns>
-    IMessageBoxConfigurator<TMessage> WithRecipient(Func<MessageContext<TMessage>, Task<Output>> handler);
+    IMessageBoxConfigurator<TMessage> WithRecipient(Func<MessageContext, TMessage, Task<Output>> handler);
 
     /// <summary>
-    /// Includes a recipient using a type injected via DI in the pipeline for messaage delivery
+    /// Includes a recipient in the message that will receive messages. The recipient is resolved via DI and must inherit from <see cref="MessageRecipient{TMessage}"/>
     /// </summary>
-    /// <typeparam name="THandler">The recipient type to include in message delivery</typeparam>
-    /// <returns>Thje configurator for chaining</returns>
-    IMessageBoxConfigurator<TMessage> WithRecipient<THandler>()
-        where THandler : IMessageRecipient<TMessage>;
+    /// <typeparam name="TRecipient">The type of the recipient to include</typeparam>
+    /// <returns>The configurator for chaining</returns>
+    IMessageBoxConfigurator<TMessage> WithRecipient<TRecipient>()
+         where TRecipient : MessageRecipient<TMessage>;
 }

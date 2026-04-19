@@ -1,12 +1,11 @@
-﻿using OSK.Messages.Messaging.Models;
-using System;
+﻿using System;
 
-namespace OSK.Messages.Messaging.Naming.TypeName;
+namespace OSK.Messages.Abstractions.Naming.TypeName;
 
 /// <summary>
 /// A naming strategy that utilizes the message and recipient types to create a unique pipeline id
 /// </summary>
-public class PipelineTypeNamingStrategy(TypeNamingOptions options = null) : IPipelineNamingStrategy
+public class PipelineTypeNamingStrategy(TypeNamingOptions? options = null) : IPipelineNamingStrategy
 {
     #region PipelineNamingStrategy
 

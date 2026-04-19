@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OSK.Messages.Abstractions;
-using OSK.Operations.Outputs;
 using OSK.Operations.Outputs.Models;
 using System;
 using System.Collections.Generic;
@@ -11,59 +10,70 @@ using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Messaging.Internal.Services;
 
-internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBoxConfigurator<TMessage>
+internal class MessageBoxConfigurator<TMessage> : IMessageBoxConfigurator<TMessage>
     where TMessage : IMessage
 {
     #region Variables
 
-    private readonly Stack<Func<IServiceProvider, IMessageMiddleware<TMessage>>> _middlewareFactories = [];
-    private List<Func<IServiceProvider, IMessageRecipient<TMessage>>> _recipientFactories = [];
+    private readonly List<Func<IServiceProvider, IMessageMiddleware>> _middlewareFactories = [];
+    private List<Func<IServiceProvider, IMessageRecipient>> _recipientFactories = [];
 
     #endregion
 
     #region IMessageBoxConfigurator
 
-    public IMessageBoxConfigurator<TMessage> WithRecipient(Func<MessageContext<TMessage>, Task<Output>> handler)
-    {
-        if (handler is null)
-        {
-            throw new ArgumentNullException(nameof(handler));
-        }
-
-        _recipientFactories.Add(_ => new MessageRecipient<TMessage>(handler));
-        return this;
-    }
-
-    public IMessageBoxConfigurator<TMessage> WithRecipient<THandler>() 
-        where THandler : IMessageRecipient<TMessage>
-    {
-        _recipientFactories.Add(sp => sp.GetRequiredService<THandler>());
-        return this;
-    }
-
-    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext<TMessage>, MessageDelegate<TMessage>, Task<Output>> middleware)
+    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, MessageDelegate, Task<Output>> middleware)
     {
         if (middleware is null)
         {
             throw new ArgumentNullException();
         }
 
-        _middlewareFactories.Push(_ => new MessageMiddleware<TMessage>(middleware));
+        _middlewareFactories.Add(_ => new MessageFunctionMiddleware(middleware));
+        return this;
+    }
+
+    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, TMessage, MessageDelegate, Task<Output>> middleware)
+    {
+        if (middleware is null)
+        {
+            throw new ArgumentNullException();
+        }
+
+        _middlewareFactories.Add(_ => new MessageFunctionMiddleware<TMessage>(middleware));
         return this;
     }
 
     public IMessageBoxConfigurator<TMessage> UseMiddleware<TMiddleware>() 
-        where TMiddleware : IMessageMiddleware<TMessage>
+        where TMiddleware : IMessageMiddleware
     {
-        _middlewareFactories.Push(sp => sp.GetRequiredService<TMiddleware>());
+        _middlewareFactories.Add(sp => sp.GetRequiredService<TMiddleware>());
+        return this;
+    }
+
+    public IMessageBoxConfigurator<TMessage> WithRecipient(Func<MessageContext, TMessage, Task<Output>> handler)
+    {
+        if (handler is null)
+        {
+            throw new ArgumentNullException(nameof(handler));
+        }
+
+        _recipientFactories.Add(_ => new MessageFunctionRecipient<TMessage>(handler));
+        return this;
+    }
+
+    public IMessageBoxConfigurator<TMessage> WithRecipient<THandler>()
+        where THandler : MessageRecipient<TMessage>
+    {
+        _recipientFactories.Add(sp => sp.GetRequiredService<THandler>());
         return this;
     }
 
     #endregion
 
-    #region MessageBoxBuilder Overrides
+    #region Api
 
-    public override MessageBox BuildMessageBox(IEnumerable<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
+    public MessageBox ConfigureMessageBox(IEnumerable<IMessageRecipient> registeredRecipients, List<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
     {
         if (services is null)
         {
@@ -74,10 +84,10 @@ internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBox
             throw new InvalidOperationException($"Unable to build message box for messages of type {typeof(TMessage)} because no message handler was configured to process it.");
         }
 
-        return new MessageBox<TMessage>([.. _recipientFactories.Select(factory =>
+        return new MessageBox(typeof(TMessage), [.. _recipientFactories.Select(factory =>
         {
             var recipient = factory(services);
-            return new MessageBoxRecipient<TMessage>(recipient, CreateDelegate(recipient, globalMiddlewares, services));
+            return new MessageBoxRecipient(recipient, CreateDelegate(recipient, globalMiddlewares, services));
         })]);
     }
 
@@ -85,26 +95,20 @@ internal class MessageBoxConfigurator<TMessage> : MessageBoxBuilder, IMessageBox
 
     #region Helpers
 
-    private MessageDelegate CreateDelegate(IMessageRecipient<TMessage> recipient, IEnumerable<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
+    private MessageDelegate CreateDelegate(IMessageRecipient recipient, List<IMessageMiddleware> globalMiddlewares, IServiceProvider services)
     {
-        MessageDelegate<TMessage> typedPipeline = recipient.HandleAsync;
-        while (_middlewareFactories.Count > 0)
+        MessageDelegate messenger = recipient.ReceiveAsync;
+
+        for (var i = _middlewareFactories.Count - 1; i >= 0; i--)
         {
-            var middlewareFactory = _middlewareFactories.Pop();
-            var nextMiddleware = middlewareFactory(services);
-            var next = typedPipeline;
-            typedPipeline = context => nextMiddleware.HandleAsync(context, next);
+            var middleware = _middlewareFactories[i](services);
+            var next = messenger;
+            messenger = context => middleware.HandleAsync(context, next);
         }
 
-        MessageDelegate messenger = context =>
+        for (var i = globalMiddlewares.Count - 1; i >= 0; i--)
         {
-            return context is MessageContext<TMessage> messageContext
-                ? typedPipeline(messageContext)
-                : Task.FromResult(Out.Success());
-        };
-
-        foreach (var middleware in globalMiddlewares)
-        {
+            var middleware = globalMiddlewares[i];
             var next = messenger;
             messenger = context => middleware.HandleAsync(context, next);
         }

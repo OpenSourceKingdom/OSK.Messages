@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using OSK.Messages.Messaging.Models;
-using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Messaging.Internal.Services;
 
@@ -37,10 +35,11 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
         }
 
         var outputs = new List<Output>();
+        var messageContext = new MessageContext(message, services);
 
         foreach (var messageBox in messageBoxes)
         {
-            var output = await messageBox.DeliverMessageAsync(message, services);
+            var output = await messageBox.DeliverMessageAsync(messageContext);
             outputs.Add(GetCalculatedOutput(output));
         }
 

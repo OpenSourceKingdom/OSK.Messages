@@ -7,13 +7,15 @@ using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Messaging.Internal.Services;
 
-internal class MessageMiddleware<TMessage>(Func<MessageContext<TMessage>, MessageDelegate<TMessage>, Task<Output>> middleware) : IMessageMiddleware<TMessage>
+internal class MessageFunctionMiddleware<TMessage>(Func<MessageContext, TMessage, MessageDelegate, Task<Output>> middleware) : IMessageMiddleware
     where TMessage : IMessage
 {
     #region IMessageMiddleware
 
-    public Task<Output> HandleAsync(MessageContext<TMessage> context, MessageDelegate<TMessage> next)
-        => middleware(context, next);
+    public Task<Output> HandleAsync(MessageContext context, MessageDelegate next)
+        => context.Message is TMessage message
+            ? middleware(context, message, next)
+            : next(context);
 
     #endregion
 }

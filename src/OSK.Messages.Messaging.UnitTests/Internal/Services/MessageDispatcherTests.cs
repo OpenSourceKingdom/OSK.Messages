@@ -1,7 +1,6 @@
 ﻿using Moq;
 using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Internal.Services;
-using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.UnitTests._Helpers;
 using OSK.Operations.Outputs;
 using OSK.Operations.Outputs.Models;

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OSK.Messages.Messaging.Models;
+namespace OSK.Messages.Abstractions;
 
 /// <summary>
 /// Provides details to a message box and recipient within the message center

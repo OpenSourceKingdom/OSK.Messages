@@ -1,8 +1,7 @@
 ﻿using OSK.Messages.Abstractions;
-using OSK.Messages.Messaging.Models;
-using OSK.Messages.Messaging.Naming.TypeName;
+using OSK.Messages.Abstractions.Naming.TypeName;
 
-namespace OSK.Messages.Messaging.UnitTests;
+namespace OSK.Messages.Messaging.UnitTests.Naming.TypeName;
 
 public class PipelineTypeNamingStrategyTests
 {

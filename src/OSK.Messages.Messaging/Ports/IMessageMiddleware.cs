@@ -2,6 +2,7 @@
 using OSK.Messages.Messaging.Models;
 using OSK.Operations.Outputs.Models;
 using System.Threading.Tasks;
+using OSK.Messages.Abstractions;
 
 namespace OSK.Messages.Messaging.Ports;
 

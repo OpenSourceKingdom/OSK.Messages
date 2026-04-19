@@ -45,6 +45,8 @@ There are a couple of ways of using the SDK. One is for the API users and the ot
 
 ## Integrations
 
+To integrate a courier, you should only need to utilize the Abstractions project
+
 There are a few key interfaces that must be considered for any given integration:
 * `ICourierService` - The bread and butter of an integration, this is the mechanism that is used to actually start transmitting a message to a message center
 * `ICourierDescriptor` - The main data structure used to find and send messages to couriers. This provides the name, which is used to filter to specific couriers if desired, and the courier service type, which should be a typed of `ICourierService` that is registered on the DI to pull. This is used by the dispatcher to transmit the message.
@@ -61,7 +63,7 @@ Finally, it is important that integrations add the needed descriptor, courier se
 
 ## Consumers
 
-Depending on the usage for a project, the requirements to utilize the SDK will vary slightly. For projects only needing access to the interfaces to call the dispatcher to send messages, only the `OSK.Messages.Abstractions` project should be needed. With that stated, it should be noted that unless an application is using the core `OSK.Message.Messenging` library with the dependencies applies to the service contain that the system will not work. There is a need for the main application to add the messaging system to the DI chain.
+Depending on the usage for a project, the requirements to utilize the SDK will vary slightly. For projects only needing access to the interfaces to call the dispatcher to send messages or to include message recipients into the DI container, only the `OSK.Messages.Abstractions` project should be needed. With that stated, it should be noted that unless an application is using the core `OSK.Message.Messenging` library with the dependencies applies to the service contain that the system will not work. There is a need for the main application to add the messaging system to the DI chain.
 
 The main focal points for consumers will be the following:
 `IMessageDispatcher` - the main port used to initiate sending messages in an application

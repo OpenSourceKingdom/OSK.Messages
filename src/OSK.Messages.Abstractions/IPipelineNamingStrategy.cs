@@ -1,6 +1,4 @@
-﻿using OSK.Messages.Messaging.Models;
-
-namespace OSK.Messages.Messaging.Naming;
+﻿namespace OSK.Messages.Abstractions;
 
 /// <summary>
 /// Represents an object that is capable of providing reproduceable, unique pipeline names given <see cref="MessageRecipientDetails"/>

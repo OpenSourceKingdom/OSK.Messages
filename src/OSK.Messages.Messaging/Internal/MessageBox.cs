@@ -1,17 +1,29 @@
 ﻿using OSK.Messages.Abstractions;
+using OSK.Operations.Outputs;
 using OSK.Operations.Outputs.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using OSK.Messages.Messaging.Models;
 
 namespace OSK.Messages.Messaging.Internal;
 
-internal abstract class MessageBox(Type boxType)
+internal class MessageBox(Type boxType, MessageBoxRecipient[] recipients)
 {
     public Type BoxType { get; } = boxType;
 
-    public abstract IEnumerable<MessageRecipientDetails> GetRecipientDetails();
+    public IEnumerable<MessageRecipientDetails> GetRecipientDetails()
+        => recipients.Select(recipient => new MessageRecipientDetails(BoxType, recipient.Handler.GetType()));
 
-    public abstract Task<Output> DeliverMessageAsync(IMessage message, IServiceProvider services);
+    public async Task<Output> DeliverMessageAsync(MessageContext context)
+    {
+        var outputs = new List<Output>();
+        foreach (var messageDelegate in recipients.Select(recipient => recipient.Delegate))
+        {
+            var output = await messageDelegate(context);
+            outputs.Add(output);
+        }
+
+        return Out.Multiple(outputs);
+    }
 }

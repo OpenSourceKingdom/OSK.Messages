@@ -1,4 +1,4 @@
-﻿namespace OSK.Messages.Messaging.Naming.TypeName;
+﻿namespace OSK.Messages.Abstractions.Naming.TypeName;
 
 /// <summary>
 /// Provides a set of options to configure the output of the <see cref="PipelineTypeNamingStrategy"/>
