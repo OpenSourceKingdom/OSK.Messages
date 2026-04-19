@@ -1,7 +1,6 @@
 ﻿using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.Ports;
-using OSK.Operations.Outputs.Models;
 using System.Threading.Tasks;
 
 namespace OSK.Messages.Messaging;
@@ -15,7 +14,7 @@ public abstract class MessageMiddleware<TMessage>: IMessageMiddleware
 {
     #region IMessageMiddleware
 
-    public Task<Output> HandleAsync(MessageContext context, MessageDelegate next)
+    public Task HandleAsync(MessageContext context, MessageDelegate next)
         => context.Message is TMessage message
             ? HandleAsync(context, message, next)
             : next(context);
@@ -24,7 +23,7 @@ public abstract class MessageMiddleware<TMessage>: IMessageMiddleware
 
     #region Helpers
 
-    protected abstract Task<Output> HandleAsync(MessageContext context, TMessage message, MessageDelegate next);
+    protected abstract Task HandleAsync(MessageContext context, TMessage message, MessageDelegate next);
 
     #endregion
 }

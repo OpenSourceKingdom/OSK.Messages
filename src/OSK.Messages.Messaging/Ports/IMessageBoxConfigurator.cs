@@ -20,14 +20,14 @@ public interface IMessageBoxConfigurator<TMessage>
     /// </summary>
     /// <param name="middleware">The middleware function to include in the pipeline</param>
     /// <returns>The configurator for chaining</returns>
-    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, MessageDelegate, Task<Output>> middleware);
+    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, MessageDelegate, Task> middleware);
 
     /// <summary>
     /// Includes typed middleware in the pipeline for message delivery
     /// </summary>
     /// <param name="middleware">The middleware function to include in the pipeline</param>
     /// <returns>The configurator for chaining</returns>
-    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, TMessage, MessageDelegate, Task<Output>> middleware);
+    IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, TMessage, MessageDelegate, Task> middleware);
 
     /// <summary>
     /// Includes middleware that is injected via DI in the pipeline for message delivery

@@ -1,6 +1,5 @@
 ﻿using OSK.Hexagonal.MetaData;
 using OSK.Messages.Messaging.Models;
-using OSK.Operations.Outputs.Models;
 using System.Threading.Tasks;
 using OSK.Messages.Abstractions;
 
@@ -17,6 +16,5 @@ public interface IMessageMiddleware
     /// </summary>
     /// <param name="context">The context for the message being delivered</param>
     /// <param name="next">The next middleware or handler to call in the pipeline of message delivery</param>
-    /// <returns>An output for the result of the middleware</returns>
-    Task<Output> HandleAsync(MessageContext context, MessageDelegate next);
+    Task HandleAsync(MessageContext context, MessageDelegate next);
 }

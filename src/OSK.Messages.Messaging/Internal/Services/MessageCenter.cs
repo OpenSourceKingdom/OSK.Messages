@@ -1,7 +1,5 @@
 ﻿using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Options;
-using OSK.Operations.Outputs;
-using OSK.Operations.Outputs.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,40 +23,25 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
         return messageBoxes.SelectMany(box => box.GetRecipientDetails());
     }
 
-    public async Task<Output> ReceiveAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
+    public async Task ReceiveAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
         where TMessage: IMessage
     {
         var messageBoxes = GetMessageBoxes<TMessage>();
         if (messageBoxes.Length is 0)
         {
-            return Out.Success();
+            return;
         }
 
-        var outputs = new List<Output>();
         var messageContext = new MessageContext(message, services);
-
         foreach (var messageBox in messageBoxes)
         {
-            var output = await messageBox.DeliverMessageAsync(messageContext);
-            outputs.Add(GetCalculatedOutput(output));
+            await messageBox.DeliverMessageAsync(messageContext);
         }
-
-        var messageMultiOutput = Out.Multiple(outputs);
-        return GetCalculatedOutput(messageMultiOutput);
     }
 
     #endregion
 
     #region Helpers
-
-    private Output GetCalculatedOutput(Output output)
-        => output switch
-        {
-            MultiOutput multiOutput => multiOutput.StatusCode.Status == OutputStatus.MultiStatus
-                ? multiOutput.GetErrorOutputs().Any() ? Out.Success() : Out.Status(OutputStatus.InternalError)
-                : Out.Status(multiOutput.StatusCode.Status),
-            _ => output
-        };
 
     private MessageBox[] GetMessageBoxes<TMessage>()
     {
