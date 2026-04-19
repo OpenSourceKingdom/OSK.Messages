@@ -44,8 +44,8 @@ public class MessageCenterTests
     {
         // Arrange
         MessageDelegate recipientDelegate = _ => Task.FromResult(Out.Success());
-        _boxes.Add(new MessageBox<TestMessage>([new MessageBoxRecipient<TestMessage>(new TestRecipient<TestMessage>(_ => { }), recipientDelegate)]));
-        _boxes.Add(new MessageBox<TestMessage>([new MessageBoxRecipient<TestMessage>(new TestRecipient<TestMessage>(_ => { }), recipientDelegate), new MessageBoxRecipient<TestMessage>(new TestRecipient<TestMessage>(_ => { }), recipientDelegate)]));
+        _boxes.Add(new MessageBox(typeof(TestMessage), [new MessageBoxRecipient(new TestRecipient<TestMessage>(_ => { }), recipientDelegate)]));
+        _boxes.Add(new MessageBox(typeof(TestMessage), [new MessageBoxRecipient(new TestRecipient<TestMessage>(_ => { }), recipientDelegate), new MessageBoxRecipient(new TestRecipient<TestMessage>(_ => { }), recipientDelegate)]));
 
         // Act
         var details = _messageCenter.GetRecipientDetails();
@@ -89,14 +89,14 @@ public class MessageCenterTests
             usedParentMessage = true;
             return Task.FromResult(Out.Success());
         };
-        _boxes.Add(new MessageBox<TestMessage>([new MessageBoxRecipient<TestMessage>(new TestRecipient<TestMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate1)]));
+        _boxes.Add(new MessageBox(typeof(TestMessage), [new MessageBoxRecipient(new TestRecipient<TestMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate1)]));
 
         MessageDelegate recipientDelegate2 = _ =>
         {
             usedInheritedMessage = true;
             return Task.FromResult(Out.Success());
         };
-        _boxes.Add(new MessageBox<TestChildMessage>([new MessageBoxRecipient<TestChildMessage>(new TestRecipient<TestChildMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate2)]));
+        _boxes.Add(new MessageBox(typeof(TestChildMessage), [new MessageBoxRecipient(new TestRecipient<TestChildMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate2)]));
 
         // Act
         var output = await _messageCenter.ReceiveAsync(new TestChildMessage());
@@ -121,14 +121,14 @@ public class MessageCenterTests
             usedParentMessage = true;
             return Task.FromResult(Out.Success());
         };
-        _boxes.Add(new MessageBox<TestMessage>([new MessageBoxRecipient<TestMessage>(new TestRecipient<TestMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate1)]));
+        _boxes.Add(new MessageBox(typeof(TestMessage), [new MessageBoxRecipient(new TestRecipient<TestMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate1)]));
 
         MessageDelegate recipientDelegate2 = _ =>
         {
             usedInheritedMessage = true;
             return Task.FromResult(Out.Success());
         };
-        _boxes.Add(new MessageBox<TestChildMessage>([new MessageBoxRecipient<TestChildMessage>(new TestRecipient<TestChildMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate2)]));
+        _boxes.Add(new MessageBox(typeof(TestMessage), [new MessageBoxRecipient(new TestRecipient<TestChildMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate2)]));
 
         // Act
         var output = await _messageCenter.ReceiveAsync(new TestChildMessage());

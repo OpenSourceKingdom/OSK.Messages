@@ -5,11 +5,11 @@ using OSK.Operations.Outputs.Models;
 
 namespace OSK.Messages.Messaging.UnitTests._Helpers;
 
-public class TestMessageMiddleware(Action<MessageContext<IMessage>> action) : IMessageMiddleware<IMessage>
+public class TestMessageMiddleware(Action<IMessage> action) : MessageMiddleware<IMessage>
 {
-    public Task<Output> HandleAsync(MessageContext<IMessage> context, MessageDelegate<IMessage> next)
+    protected override Task<Output> HandleAsync(MessageContext context, IMessage message, MessageDelegate next)
     {
-        action(context);
+        action(message);
         return next(context);
     }
 }

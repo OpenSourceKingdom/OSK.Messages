@@ -1,8 +1,10 @@
 ﻿using Moq;
 using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Internal.Services;
+using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.UnitTests._Helpers;
 using OSK.Operations.Outputs;
+using OSK.Operations.Outputs.Models;
 
 namespace OSK.Messages.Messaging.UnitTests.Internal.Services;
 
@@ -27,7 +29,7 @@ public class MessageBoxConfiguratorTests
     public void WithRecipient_ValidHandler_ReturnsSuccessfully()
     {
         // Arrange/Act/Assert
-        _configurator.WithRecipient(_ => Task.FromResult(Out.Success()));
+        _configurator.WithRecipient((_, _) => Task.FromResult(Out.Success()));
     }
 
     #endregion
@@ -38,7 +40,7 @@ public class MessageBoxConfiguratorTests
     public void WithRecipient_ValidRecipient_T_ReturnsSuccessfully()
     {
         // Arrange/Act/Assert
-        _configurator.WithRecipient<TestRecipient>();
+        _configurator.WithRecipient<TestRecipient<IMessage>>();
     }
 
     #endregion
@@ -49,7 +51,7 @@ public class MessageBoxConfiguratorTests
     public void UseMiddleware_NullMiddleware_ThrowsArgumentNullException()
     {
         // Arrange/Act/Assert
-        Assert.Throws<ArgumentNullException>(() => _configurator.UseMiddleware(null!));
+        Assert.Throws<ArgumentNullException>(() => _configurator.UseMiddleware((Func<MessageContext, MessageDelegate, Task<Output>>)null!));
     }
 
     [Fact]
@@ -57,6 +59,24 @@ public class MessageBoxConfiguratorTests
     {
         // Arrange/Act/Assert
         _configurator.UseMiddleware((_, _) => Task.FromResult(Out.Success()));
+    }
+
+    #endregion
+
+    #region UseMiddleware (T - Lambda)
+
+    [Fact]
+    public void UseMiddleware_T_Lambda_NullMiddleware_ThrowsArgumentNullException()
+    {
+        // Arrange/Act/Assert
+        Assert.Throws<ArgumentNullException>(() => _configurator.UseMiddleware((Func<MessageContext, IMessage, MessageDelegate, Task<Output>>)null!));
+    }
+
+    [Fact]
+    public void UseMiddleware_T_Lambda_ValidMiddleware_ReturnsSuccessfully()
+    {
+        // Arrange/Act/Assert
+        _configurator.UseMiddleware((_, _, _) => Task.FromResult(Out.Success()));
     }
 
     #endregion
@@ -72,27 +92,27 @@ public class MessageBoxConfiguratorTests
 
     #endregion
 
-    #region BuildMessageBox
+    #region ConfigureMessageBox
 
     [Fact]
-    public void BuildMessageBox_NullServiceProvider_ThrowsArgumentNullException()
+    public void ConfigureMessageBox_NullServiceProvider_ThrowsArgumentNullException()
     {
         // Arrange/Act/Assert
-        Assert.Throws<ArgumentNullException>(() => _configurator.BuildMessageBox([], null!));
+        Assert.Throws<ArgumentNullException>(() => _configurator.ConfigureMessageBox([], [], null!));
     }
 
     [Fact]
-    public void BuildMessageBox_NoHandlersRegistered_ThrowsInvalidOperationException()
+    public void ConfigureMessageBox_NoHandlersRegistered_ThrowsInvalidOperationException()
     {
         // Arrange
         var mockProvider = new Mock<IServiceProvider>();
 
         // Act/Assert
-        Assert.Throws<InvalidOperationException>(() => _configurator.BuildMessageBox([], mockProvider.Object));
+        Assert.Throws<InvalidOperationException>(() => _configurator.ConfigureMessageBox([], [], mockProvider.Object));
     }
 
     [Fact]
-    public async Task BuildMessageBox_SingleTypedRecipient_ValidConfiguration_ReturnsSuccessfully()
+    public async Task ConfigureMessageBox_SingleTypedRecipient_ValidConfiguration_ReturnsSuccessfully()
     {
         // Arrange
         var usedHandler = false;
@@ -102,13 +122,13 @@ public class MessageBoxConfiguratorTests
 
         var mockProvider = new Mock<IServiceProvider>();
 
-        mockProvider.Setup(m => m.GetService(It.Is<Type>(t => t == typeof(TestRecipient))))
-            .Returns(new TestRecipient(_ => usedHandler = true));
+        mockProvider.Setup(m => m.GetService(It.Is<Type>(t => t == typeof(TestRecipient<IMessage>))))
+            .Returns(new TestRecipient<IMessage>(_ => usedHandler = true));
 
         mockProvider.Setup(m => m.GetService(It.Is<Type>(t => t == typeof(TestMessageMiddleware))))
             .Returns(new TestMessageMiddleware(_ => usedTypedMiddleware = true));
 
-        _configurator.WithRecipient<TestRecipient>();
+        _configurator.WithRecipient<TestRecipient<IMessage>>();
         _configurator.UseMiddleware((context, next) =>
         {
             usedGenericMiddleware = true;
@@ -117,9 +137,9 @@ public class MessageBoxConfiguratorTests
         _configurator.UseMiddleware<TestMessageMiddleware>();
 
         // Act
-        var box = _configurator.BuildMessageBox([new TestMiddleware(_ => usedGlobalMiddleware = true)], mockProvider.Object);
+        var box = _configurator.ConfigureMessageBox([], [new TestMiddleware(_ => usedGlobalMiddleware = true)], mockProvider.Object);
 
-        await box.DeliverMessageAsync(Mock.Of<IMessage>(), mockProvider.Object);
+        await box.DeliverMessageAsync(new MessageContext(Mock.Of<IMessage>(), mockProvider.Object));
 
         // Assert
         Assert.NotNull(box);
@@ -131,7 +151,7 @@ public class MessageBoxConfiguratorTests
     }
 
     [Fact]
-    public async Task BuildMessageBox_MultipleTypedRecipients_ValidConfiguration_ReturnsSuccessfully()
+    public async Task ConfigureMessageBox_MultipleTypedRecipients_ValidConfiguration_ReturnsSuccessfully()
     {
         // Arrange
         var usedHandler1 = false;
@@ -143,8 +163,8 @@ public class MessageBoxConfiguratorTests
 
         var mockProvider = new Mock<IServiceProvider>();
 
-        mockProvider.Setup(m => m.GetService(It.Is<Type>(t => t == typeof(TestRecipient))))
-            .Returns(new TestRecipient(_ =>
+        mockProvider.Setup(m => m.GetService(It.Is<Type>(t => t == typeof(TestRecipient<IMessage>))))
+            .Returns(new TestRecipient<IMessage>(_ =>
             {
                 usedHandler1 = true;
             }));
@@ -152,8 +172,8 @@ public class MessageBoxConfiguratorTests
         mockProvider.Setup(m => m.GetService(It.Is<Type>(t => t == typeof(TestMessageMiddleware))))
             .Returns(new TestMessageMiddleware(_ => usedTypedMiddleware = true));
 
-        _configurator.WithRecipient<TestRecipient>();
-        _configurator.WithRecipient(_ =>
+        _configurator.WithRecipient<TestRecipient<IMessage>>();
+        _configurator.WithRecipient((_, _) =>
         {
             usedHandler2 = true;
             return Task.FromResult(Out.Success());
@@ -168,9 +188,9 @@ public class MessageBoxConfiguratorTests
         _configurator.UseMiddleware<TestMessageMiddleware>();
 
         // Act
-        var box = _configurator.BuildMessageBox([new TestMiddleware(_ => usedGlobalMiddleware = true)], mockProvider.Object);
+        var box = _configurator.ConfigureMessageBox([], [new TestMiddleware(_ => usedGlobalMiddleware = true)], mockProvider.Object);
 
-        await box.DeliverMessageAsync(Mock.Of<IMessage>(), mockProvider.Object);
+        await box.DeliverMessageAsync(new MessageContext(Mock.Of<IMessage>(), mockProvider.Object));
 
         // Assert
         Assert.NotNull(box);

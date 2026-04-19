@@ -61,30 +61,30 @@ public class MessageCenterBuilderTests
 
     #endregion
 
-    #region AddMessageBox
+    #region ConfigureMessageBox
 
     [Fact]
-    public void AddMessageBox_NullConfiguration_ThrowsArgumentNullException()
+    public void ConfigureMessageBox_NullConfiguration_ThrowsArgumentNullException()
     {
         // Arrange/Act/Assert
-        Assert.Throws<ArgumentNullException>(() => _builder.AddMessageBox<IMessage>(null!));
+        Assert.Throws<ArgumentNullException>(() => _builder.ConfigureMessageBox<IMessage>(null!));
     }
 
     [Fact]
-    public void AddMessageBox_ValidConfiguration_ReturnsSuccessfully()
+    public void ConfigureMessageBox_ValidConfiguration_ReturnsSuccessfully()
     {
         // Arrange/Act/Assert
-        _builder.AddMessageBox<IMessage>(_ => { });
+        _builder.ConfigureMessageBox<IMessage>(_ => { });
     }
 
     [Fact]
-    public void AddMessageBox_ValidConfiguration_DuplicateMessageBoxType_ReturnsSuccessfully()
+    public void ConfigureMessageBox_ValidConfiguration_DuplicateMessageBoxType_ReturnsSuccessfully()
     {
         // Arrange
-        _builder.AddMessageBox<IMessage>(_ => { });
+        _builder.ConfigureMessageBox<IMessage>(_ => { });
 
         // Act/Assert
-        _builder.AddMessageBox<IMessage>(_ => { });
+        _builder.ConfigureMessageBox<IMessage>(_ => { });
     }
 
     #endregion
@@ -102,11 +102,11 @@ public class MessageCenterBuilderTests
     public void BuildMessageCenter_ValidConfiguration_ReturnsSuccessfully()
     {
         // Arrange
-        _builder.AddMessageBox<IMessage>(c => c.WithRecipient(_ => Task.FromResult(Out.Success())));
+        _builder.ConfigureMessageBox<IMessage>(c => c.WithRecipient((_, _) => Task.FromResult(Out.Success())));
         // Test Duplicate
-        _builder.AddMessageBox<IMessage>(c => c.WithRecipient(_ => Task.FromResult(Out.Success())));
+        _builder.ConfigureMessageBox<IMessage>(c => c.WithRecipient((_, _) => Task.FromResult(Out.Success())));
 
-        _builder.AddMessageBox<TestMessage>(c => c.WithRecipient(_ => Task.FromResult(Out.Success())));
+        _builder.ConfigureMessageBox<TestMessage>(c => c.WithRecipient((_, _) => Task.FromResult(Out.Success())));
         _builder.WithOptions(o => o.AllowInheritedMessageDelivery = true);
 
         var mockProvider = new Mock<IServiceProvider>();

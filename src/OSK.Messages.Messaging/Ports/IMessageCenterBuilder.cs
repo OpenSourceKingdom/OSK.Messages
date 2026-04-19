@@ -34,14 +34,14 @@ public interface IMessageCenterBuilder
     /// <typeparam name="TMiddleware">The type of middleware injected via DI</typeparam>
     /// <returns>The builder for chaining</returns>
     IMessageCenterBuilder UseMiddleware<TMiddleware>()
-        where TMiddleware : IMessageMiddleware;
+        where TMiddleware: IMessageMiddleware;
 
     /// <summary>
-    /// Adds a message box to receive messages of type <typeparamref name="TMessage"/>
+    /// Configures a message box of type <typeparamref name="TMessage"/> and its related delivery pipeline for custom middleware and options
     /// </summary>
     /// <typeparam name="TMessage">The type of message the box will receive</typeparam>
     /// <param name="configurator">The action configurator to apply to the message box</param>
     /// <returns>The builder for chaining</returns>
-    IMessageCenterBuilder AddMessageBox<TMessage>(Action<IMessageBoxConfigurator<TMessage>> configurator)
+    IMessageCenterBuilder ConfigureMessageBox<TMessage>(Action<IMessageBoxConfigurator<TMessage>> configurator)
         where TMessage: IMessage;
 }

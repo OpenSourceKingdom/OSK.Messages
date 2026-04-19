@@ -35,10 +35,11 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
         }
 
         var outputs = new List<Output>();
+        var messageContext = new MessageContext(message, services);
 
         foreach (var messageBox in messageBoxes)
         {
-            var output = await messageBox.DeliverMessageAsync(message, services);
+            var output = await messageBox.DeliverMessageAsync(messageContext);
             outputs.Add(GetCalculatedOutput(output));
         }
 

@@ -7,6 +7,7 @@ using OSK.Operations.Outputs.Models;
 using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.Ports;
 using OSK.Messages.Messaging.Options;
+using System.Linq;
 
 namespace OSK.Messages.Messaging.Internal.Services;
 
@@ -15,7 +16,7 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
     #region Variables
 
     private readonly Stack<Func<IServiceProvider, IMessageMiddleware>> _middlewareFactories = [];
-    private readonly Dictionary<Type, Func<IEnumerable<IMessageMiddleware>, IServiceProvider, MessageBox>> _messageBoxBuilders = [];
+    private readonly Dictionary<Type, Func<IEnumerable<IMessageRecipient>, List<IMessageMiddleware>, IServiceProvider, MessageBox>> _messageBoxBuilders = [];
     private readonly MessagingOptions _options = new()
     {
         AllowInheritedMessageDelivery = false
@@ -44,7 +45,7 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
             throw new ArgumentNullException(nameof(middleware));
         }
 
-        _middlewareFactories.Push(_ => new MessageMiddleware(middleware));
+        _middlewareFactories.Push(_ => new MessageFunctionMiddleware(middleware));
         return this;
     }
 
@@ -55,7 +56,7 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
         return this;
     }
 
-    public IMessageCenterBuilder AddMessageBox<TMessage>(Action<IMessageBoxConfigurator<TMessage>> configurator) 
+    public IMessageCenterBuilder ConfigureMessageBox<TMessage>(Action<IMessageBoxConfigurator<TMessage>> configurator) 
         where TMessage : IMessage
     {
         if (configurator is null)
@@ -69,12 +70,12 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
             return this;
         }
 
-        _messageBoxBuilders[boxType] = (middlewares, services) =>
+        _messageBoxBuilders[boxType] = (registeredRecipients, middlewares, services) =>
         {
             var builder = new MessageBoxConfigurator<TMessage>();
             configurator(builder);
 
-            return builder.BuildMessageBox(middlewares, services);
+            return builder.ConfigureMessageBox(registeredRecipients, middlewares, services);
         };
 
         return this;
@@ -98,12 +99,30 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
             middlewares.Add(middleware);
         }
 
-        middlewares.Reverse();
+        var registeredMessageRecipients = services.GetService<IEnumerable<IMessageRecipient>>()?
+                                                  .GroupBy(recipient => recipient.MessageType)
+                                                  .ToDictionary(recipientGroup => recipientGroup.Key, recipientGroup => recipientGroup.Select(recipient => recipient)) ?? [];
+
+        foreach (var registeredMessageRecipientKvp in registeredMessageRecipients)
+        {
+            if (!_messageBoxBuilders.TryGetValue(registeredMessageRecipientKvp.Key, out _))
+            {
+                _messageBoxBuilders[registeredMessageRecipientKvp.Key] = (registeredRecipients, middlewares, services) =>
+                {
+                    return new MessageBox(registeredMessageRecipientKvp.Key, [.. registeredMessageRecipientKvp.Value.Select(recipient =>
+                    {
+                        MessageDelegate messenger = recipient.ReceiveAsync;
+                        return new MessageBoxRecipient(recipient, messenger);
+                    })]);
+                };
+            }
+        }
 
         List<MessageBox> messageBoxes = [];
-        foreach (var messageBoxBuilder in _messageBoxBuilders.Values)
+        foreach (var messageBoxTypBuilderKvp in _messageBoxBuilders)
         {
-            var box = messageBoxBuilder(middlewares, services);
+            var registeredRecipients = registeredMessageRecipients.TryGetValue(messageBoxTypBuilderKvp.Key, out var recipients) ? recipients : Enumerable.Empty<IMessageRecipient>();
+            var box = messageBoxTypBuilderKvp.Value(registeredRecipients, middlewares, services);
             messageBoxes.Add(box);
         }
 

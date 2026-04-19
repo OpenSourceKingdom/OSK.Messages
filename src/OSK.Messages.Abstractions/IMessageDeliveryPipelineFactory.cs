@@ -1,7 +1,8 @@
 ﻿using OSK.Hexagonal.MetaData;
 using OSK.Messages.Abstractions;
+using OSK.Messages.Messaging.Ports;
 
-namespace OSK.Messages.Messaging.Ports;
+namespace OSK.Messages.Abstractions;
 
 /// <summary>
 /// A factory for a given courier service integration that creates <see cref="IMessageDeliveryPipeline"/> for handling final delivery processing

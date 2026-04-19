@@ -1,9 +1,19 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Linq;
 
 namespace OSK.Messages.Abstractions;
 
 public static class ServiceCollectionExtensions
 {
+    public static IServiceCollection AddMessageRecipient<TRecipient>(this IServiceCollection services)
+        where TRecipient : class, IMessageRecipient
+    {
+        services.AddSingleton<IMessageRecipient, TRecipient>();
+
+        return services;
+    }
+
     /// <summary>
     /// Adds a provided courier descriptor to the list of couriers able to be used by the <see cref="IMessageDispatcher"/>
     /// </summary>

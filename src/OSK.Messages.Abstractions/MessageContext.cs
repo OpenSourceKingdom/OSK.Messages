@@ -1,7 +1,6 @@
 ﻿using System;
-using OSK.Messages.Abstractions;
 
-namespace OSK.Messages.Messaging.Models;
+namespace OSK.Messages.Abstractions;
 
 /// <summary>
 /// Provides some contextual information about the event
