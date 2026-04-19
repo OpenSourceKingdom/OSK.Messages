@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace OSK.Messages.Abstractions;
 
+/// <summary>
+/// Represents an object that can receive and handle messages within the messaging system
+/// </summary>
 public interface IMessageRecipient
 {
     /// <summary>

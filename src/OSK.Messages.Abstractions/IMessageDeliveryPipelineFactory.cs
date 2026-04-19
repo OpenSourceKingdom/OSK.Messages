@@ -1,6 +1,4 @@
 ﻿using OSK.Hexagonal.MetaData;
-using OSK.Messages.Abstractions;
-using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Abstractions;
 

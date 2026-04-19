@@ -1,11 +1,15 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Linq;
 
 namespace OSK.Messages.Abstractions;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds a message recipient to the list of registered recepients for the message system to use
+    /// </summary>
+    /// <typeparam name="TRecipient">The type of recipient</typeparam>
+    /// <param name="services">The service collection to add the recipient to</param>
+    /// <returns>The service collection for chaining</returns>
     public static IServiceCollection AddMessageRecipient<TRecipient>(this IServiceCollection services)
         where TRecipient : class, IMessageRecipient
     {

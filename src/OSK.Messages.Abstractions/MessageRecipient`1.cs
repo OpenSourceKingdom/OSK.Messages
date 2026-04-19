@@ -1,12 +1,14 @@
 ﻿using OSK.Operations.Outputs;
 using OSK.Operations.Outputs.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSK.Messages.Abstractions;
 
+/// <summary>
+/// A typed message recipient for receiving messages of a specific type
+/// </summary>
+/// <typeparam name="TMessage"></typeparam>
 public abstract class MessageRecipient<TMessage> : IMessageRecipient
     where TMessage : IMessage
 {

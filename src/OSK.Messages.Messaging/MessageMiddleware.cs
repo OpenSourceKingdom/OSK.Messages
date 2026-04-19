@@ -2,13 +2,14 @@
 using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.Ports;
 using OSK.Operations.Outputs.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OSK.Messages.Messaging;
 
+/// <summary>
+/// Provides a middleware that is typed for a specific message type.
+/// </summary>
+/// <typeparam name="TMessage">The type of message the middleware is associated with</typeparam>
 public abstract class MessageMiddleware<TMessage>: IMessageMiddleware
     where TMessage: IMessage
 {

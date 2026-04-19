@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using OSK.Messages.Abstractions;
-using OSK.Operations.Outputs;
 using OSK.Operations.Outputs.Models;
 using System;
 using System.Collections.Generic;

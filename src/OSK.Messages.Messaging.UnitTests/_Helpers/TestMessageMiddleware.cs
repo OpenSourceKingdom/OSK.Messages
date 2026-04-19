@@ -1,6 +1,5 @@
 ﻿using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Models;
-using OSK.Messages.Messaging.Ports;
 using OSK.Operations.Outputs.Models;
 
 namespace OSK.Messages.Messaging.UnitTests._Helpers;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OSK.Messages.Abstractions;
-using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Runtime.Internal.Services;
 

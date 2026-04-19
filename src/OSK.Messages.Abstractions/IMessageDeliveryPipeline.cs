@@ -1,9 +1,7 @@
 ﻿using OSK.Hexagonal.MetaData;
-using OSK.Messages.Abstractions;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using OSK.Messages.Messaging.Ports;
 
 namespace OSK.Messages.Abstractions;
 
