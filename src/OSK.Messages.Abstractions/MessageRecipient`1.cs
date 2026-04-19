@@ -1,5 +1,4 @@
 ﻿using OSK.Operations.Outputs;
-using OSK.Operations.Outputs.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ public abstract class MessageRecipient<TMessage> : IMessageRecipient
 
     public Type MessageType => typeof(TMessage);
 
-    public Task<Output> ReceiveAsync(MessageContext context)
+    public Task ReceiveAsync(MessageContext context)
         => context.Message is TMessage message
             ? ReceiveAsync(context, message)
             : Task.FromResult(Out.Success());
@@ -25,7 +24,7 @@ public abstract class MessageRecipient<TMessage> : IMessageRecipient
 
     #region Helpers
 
-    protected abstract Task<Output> ReceiveAsync(MessageContext context, TMessage message);
+    protected abstract Task ReceiveAsync(MessageContext context, TMessage message);
 
     #endregion
 }

@@ -68,11 +68,8 @@ public class MessageCenterTests
     [Fact]
     public async Task ReceiveAsync_NoMessageBoxesForMessage_ReturnsSuccessfully()
     {
-        // Arrange/Act
-        var receiveOutput = await _messageCenter.ReceiveAsync(new TestMessage());
-
-        // Assert
-        Assert.True(receiveOutput.IsSuccessful);
+        // Arrange/Act/Assert
+        await _messageCenter.ReceiveAsync(new TestMessage());
     }
 
     [Fact]
@@ -99,10 +96,9 @@ public class MessageCenterTests
         _boxes.Add(new MessageBox(typeof(TestChildMessage), [new MessageBoxRecipient(new TestRecipient<TestChildMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate2)]));
 
         // Act
-        var output = await _messageCenter.ReceiveAsync(new TestChildMessage());
+        await _messageCenter.ReceiveAsync(new TestChildMessage());
 
         // Assert
-        Assert.True(output.IsSuccessful);
         Assert.True(usedInheritedMessage);
         Assert.False(usedParentMessage);
     }
@@ -131,10 +127,9 @@ public class MessageCenterTests
         _boxes.Add(new MessageBox(typeof(TestMessage), [new MessageBoxRecipient(new TestRecipient<TestChildMessage>(_ => { /* Delegate assumed to trigger recipient, so just using delegate */ }), recipientDelegate2)]));
 
         // Act
-        var output = await _messageCenter.ReceiveAsync(new TestChildMessage());
+        await _messageCenter.ReceiveAsync(new TestChildMessage());
 
         // Assert
-        Assert.True(output.IsSuccessful);
         Assert.True(usedInheritedMessage);
         Assert.True(usedParentMessage);
     }

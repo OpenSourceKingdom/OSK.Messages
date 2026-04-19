@@ -1,5 +1,4 @@
-﻿using OSK.Operations.Outputs.Models;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
 namespace OSK.Messages.Abstractions;
@@ -19,5 +18,5 @@ public interface IMessageRecipient
     /// </summary>
     /// <param name="context">The contextual information for the message that was delivered</param>
     /// <returns>An output for the result of the delivery</returns>
-    Task<Output> ReceiveAsync(MessageContext context);
+    Task ReceiveAsync(MessageContext context);
 }

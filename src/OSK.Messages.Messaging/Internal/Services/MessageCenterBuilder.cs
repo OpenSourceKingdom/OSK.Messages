@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using OSK.Messages.Abstractions;
-using OSK.Operations.Outputs.Models;
 using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.Ports;
 using OSK.Messages.Messaging.Options;
@@ -38,7 +37,7 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
         return this;
     }
 
-    public IMessageCenterBuilder UseMiddleware(Func<MessageContext, MessageDelegate, Task<Output>> middleware)
+    public IMessageCenterBuilder UseMiddleware(Func<MessageContext, MessageDelegate, Task> middleware)
     {
         if (middleware is null)
         {

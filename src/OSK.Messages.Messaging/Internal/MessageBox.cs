@@ -1,6 +1,4 @@
 ﻿using OSK.Messages.Abstractions;
-using OSK.Operations.Outputs;
-using OSK.Operations.Outputs.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +13,11 @@ internal class MessageBox(Type boxType, MessageBoxRecipient[] recipients)
     public IEnumerable<MessageRecipientDetails> GetRecipientDetails()
         => recipients.Select(recipient => new MessageRecipientDetails(BoxType, recipient.Handler.GetType()));
 
-    public async Task<Output> DeliverMessageAsync(MessageContext context)
+    public async Task DeliverMessageAsync(MessageContext context)
     {
-        var outputs = new List<Output>();
         foreach (var messageDelegate in recipients.Select(recipient => recipient.Delegate))
         {
-            var output = await messageDelegate(context);
-            outputs.Add(output);
+            await messageDelegate(context);
         }
-
-        return Out.Multiple(outputs);
     }
 }

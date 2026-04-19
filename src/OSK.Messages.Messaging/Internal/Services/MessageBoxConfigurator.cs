@@ -22,7 +22,7 @@ internal class MessageBoxConfigurator<TMessage> : IMessageBoxConfigurator<TMessa
 
     #region IMessageBoxConfigurator
 
-    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, MessageDelegate, Task<Output>> middleware)
+    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, MessageDelegate, Task> middleware)
     {
         if (middleware is null)
         {
@@ -33,7 +33,7 @@ internal class MessageBoxConfigurator<TMessage> : IMessageBoxConfigurator<TMessa
         return this;
     }
 
-    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, TMessage, MessageDelegate, Task<Output>> middleware)
+    public IMessageBoxConfigurator<TMessage> UseMiddleware(Func<MessageContext, TMessage, MessageDelegate, Task> middleware)
     {
         if (middleware is null)
         {

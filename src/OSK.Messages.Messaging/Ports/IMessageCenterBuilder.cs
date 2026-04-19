@@ -2,7 +2,6 @@
 using OSK.Messages.Abstractions;
 using OSK.Messages.Messaging.Models;
 using OSK.Messages.Messaging.Options;
-using OSK.Operations.Outputs.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -26,7 +25,7 @@ public interface IMessageCenterBuilder
     /// </summary>
     /// <param name="middleware">The middleware function to include in the message delivery</param>
     /// <returns>The builder for chaining</returns>
-    IMessageCenterBuilder UseMiddleware(Func<MessageContext, MessageDelegate, Task<Output>> middleware);
+    IMessageCenterBuilder UseMiddleware(Func<MessageContext, MessageDelegate, Task> middleware);
 
     /// <summary>
     /// Adds middleware at a global level that will be applied to all message deliveries in the message center

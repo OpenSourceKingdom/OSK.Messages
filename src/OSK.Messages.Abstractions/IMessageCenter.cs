@@ -1,5 +1,4 @@
 ﻿using OSK.Hexagonal.MetaData;
-using OSK.Operations.Outputs.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,7 +23,6 @@ public interface IMessageCenter
     /// <typeparam name="TMessage">The type of message that was received</typeparam>
     /// <param name="message">The message that was received</param>
     /// <param name="cancellationToken">A token to cancel the operation</param>
-    /// <returns>The result of the message delivery</returns>
-    Task<Output> ReceiveAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
+    Task ReceiveAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
         where TMessage: IMessage;
 }
