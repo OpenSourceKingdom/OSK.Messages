@@ -20,5 +20,6 @@ public interface IMessageDispatcher
     /// <param name="options"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    Task<Output> DispatchAsync(IMessage message, TimeSpan delay, DispatchOptions options, CancellationToken cancellationToken = default);
+    Task<Output> DispatchAsync<TMessage>(TMessage message, TimeSpan delay, DispatchOptions options, CancellationToken cancellationToken = default)
+        where TMessage: IMessage;
 }

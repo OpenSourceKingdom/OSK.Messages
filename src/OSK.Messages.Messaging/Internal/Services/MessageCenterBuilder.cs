@@ -124,8 +124,8 @@ internal class MessageCenterBuilder: IMessageCenterBuilder
             var box = messageBoxTypBuilderKvp.Value(registeredRecipients, middlewares, services);
             messageBoxes.Add(box);
         }
-
-        return ActivatorUtilities.CreateInstance<MessageCenter>(services, [ messageBoxes, _options ]);
+    
+        return ActivatorUtilities.CreateInstance<MessageCenter>(services, messageBoxes, _options);
     }
 
     #endregion

@@ -14,7 +14,8 @@ internal class MessageDispatcher(IEnumerable<ICourierDescriptor> courierDescript
 {
     #region IEventDispatcher
 
-    public async Task<Output> DispatchAsync(IMessage message, TimeSpan delay, DispatchOptions options, CancellationToken cancellationToken = default)
+    public async Task<Output> DispatchAsync<TMessage>(TMessage message, TimeSpan delay, DispatchOptions options, CancellationToken cancellationToken = default)
+        where TMessage: IMessage
     {
         if (message is null)
         {

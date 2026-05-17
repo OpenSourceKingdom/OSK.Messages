@@ -26,7 +26,7 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
     public async Task ReceiveAsync<TMessage>(TMessage message, CancellationToken cancellationToken = default)
         where TMessage: IMessage
     {
-        var messageBoxes = GetMessageBoxes<TMessage>();
+        var messageBoxes = GetMessageBoxes(message.GetType());
         if (messageBoxes.Length is 0)
         {
             return;
@@ -43,9 +43,8 @@ internal partial class MessageCenter(IList<MessageBox> messageBoxes, IServicePro
 
     #region Helpers
 
-    private MessageBox[] GetMessageBoxes<TMessage>()
+    private MessageBox[] GetMessageBoxes(Type messageType)
     {
-        var messageType = typeof(TMessage);
         if (_messageBoxLookup.TryGetValue(messageType, out var validBoxes))
         {
             return validBoxes;
