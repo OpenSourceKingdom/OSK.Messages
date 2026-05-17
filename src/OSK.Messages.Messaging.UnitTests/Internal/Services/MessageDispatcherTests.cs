@@ -36,7 +36,7 @@ public class MessageDispatcherTests
     public async Task DispatchAsync_NullMessage_ThrowsArgumentNullException()
     {
         // Arrange/Act/Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() => _dispatcher.DispatchAsync(null!, TimeSpan.Zero, new DispatchOptions()));
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _dispatcher.DispatchAsync<TestChildMessage>(null!, TimeSpan.Zero, new DispatchOptions()));
     }
 
     [Fact]
