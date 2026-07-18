@@ -15,11 +15,11 @@ public interface IMessageDispatcher
     /// <summary>
     /// Attempts to dispatch a message into the messaging system using the provided dispatch options and optional delay
     /// </summary>
-    /// <param name="message"></param>
-    /// <param name="delay"></param>
-    /// <param name="options"></param>
-    /// <param name="cancellationToken"></param>
-    /// <returns></returns>
+    /// <param name="message">The message to send</param>
+    /// <param name="delay">A delay in the message to dispatch</param>
+    /// <param name="options">Extra options for sending the message</param>
+    /// <param name="cancellationToken">The token to cancel the operation</param>
+    /// <returns>An output for the dispatch operation</returns>
     Task<Output> DispatchAsync<TMessage>(TMessage message, TimeSpan delay, DispatchOptions options, CancellationToken cancellationToken = default)
         where TMessage: IMessage;
 }
