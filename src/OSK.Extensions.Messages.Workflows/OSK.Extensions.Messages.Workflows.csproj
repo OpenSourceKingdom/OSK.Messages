@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.1</TargetFramework>
+		<Nullable>enable</Nullable>
+		<Description>Provides a basis for an event messaging system, capable of integraitng with various message buses and other delivery mechanisms, to send, transmit, and receive event messages in an application.</Description>
+		<PackageTags>OpenSourceKingdom, OpenSource, messaging, event, bus, delivery, message, courier, dispatch</PackageTags>
+		<Title>OSK.Extensions.Messages.Workflows</Title>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\..\README.md" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="OSK.Operations.Workflows" Version="1.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\OSK.Messages.Abstractions\OSK.Messages.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

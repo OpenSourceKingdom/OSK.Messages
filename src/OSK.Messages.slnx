@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="OSK.Extensions.Messages.Workflows/OSK.Extensions.Messages.Workflows.csproj" Id="bf1c9bee-c99b-45ea-b37c-d90e1b6c2ad8" />
   <Project Path="OSK.Messages.Abstractions/OSK.Messages.Abstractions.csproj" Id="8b4c3bfb-aba8-415c-848c-23cd50caf426" />
   <Project Path="OSK.Messages.Messaging.UnitTests/OSK.Messages.Messaging.UnitTests.csproj" Id="2cd085a8-f1f0-47b1-b6eb-35eb4a93969c" />
   <Project Path="OSK.Messages.Messaging/OSK.Messages.Messaging.csproj" />
