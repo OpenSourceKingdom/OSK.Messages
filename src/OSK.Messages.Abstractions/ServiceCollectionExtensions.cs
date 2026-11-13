@@ -13,8 +13,8 @@ public static class ServiceCollectionExtensions
     /// <returns>The service collection for chaining</returns>
     public static IServiceCollection TryAddMessageRecipient<TRecipient>(this IServiceCollection services)
         where TRecipient : class, IMessageRecipient
-    {
-        services.TryAddSingleton<IMessageRecipient, TRecipient>();
+    {    
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IMessageRecipient, TRecipient>());
 
         return services;
     }
@@ -28,7 +28,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection TryAddCourier<TCourier>(this IServiceCollection services)
         where TCourier : class, ICourierDescriptor
     {
-        services.TryAddSingleton<ICourierDescriptor, TCourier>();
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<ICourierDescriptor, TCourier>());
 
         return services;
     }
