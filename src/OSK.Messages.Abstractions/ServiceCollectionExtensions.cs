@@ -1,9 +1,38 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace OSK.Messages.Abstractions;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Attempts to add a message recipient to the list of registered recipients for the message system to use
+    /// </summary>
+    /// <typeparam name="TRecipient">The type of recipient</typeparam>
+    /// <param name="services">The service collection to add the recipient to</param>
+    /// <returns>The service collection for chaining</returns>
+    public static IServiceCollection TryAddMessageRecipient<TRecipient>(this IServiceCollection services)
+        where TRecipient : class, IMessageRecipient
+    {
+        services.TryAddSingleton<IMessageRecipient, TRecipient>();
+
+        return services;
+    }
+
+    /// <summary>
+    /// Attempts to add a provided courier descriptor to the list of couriers able to be used by the <see cref="IMessageDispatcher"/>
+    /// </summary>
+    /// <typeparam name="TCourier">The type of courier</typeparam>
+    /// <param name="services">The service collection that the descriptor will be added to</param>
+    /// <returns>The service collection for chaining</returns>
+    public static IServiceCollection TryAddCourier<TCourier>(this IServiceCollection services)
+        where TCourier : class, ICourierDescriptor
+    {
+        services.TryAddSingleton<ICourierDescriptor, TCourier>();
+
+        return services;
+    }
+
     /// <summary>
     /// Adds a message recipient to the list of registered recepients for the message system to use
     /// </summary>
